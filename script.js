@@ -88,12 +88,10 @@ const GameController = (function(rows, cols, wincon) {
             return TIE
         } else {
             // Row check
-            for (let i = 0; i < currentBoard.length; i++) {
+            for (let i = 0; i < rows; i++) {
                 let currentMarker = currentBoard[i][0];
                 let counter = currentMarker ? 1 : 0;
-                console.log(i);
-                for (let j = 1; j < currentBoard[i].length; j++) {
-                    console.log(j);
+                for (let j = 1; j < cols; j++) {
                     if (currentMarker && currentMarker === currentBoard[i][j]) {
                         counter++;
                     } else {
@@ -108,6 +106,60 @@ const GameController = (function(rows, cols, wincon) {
                 }
             }
             // Col check
+            for (let i = 0; i < cols; i++) {
+                let currentMarker = currentBoard[0][i];
+                let counter = currentMarker ? 1 : 0;
+                for (let j = 1; j < rows; j++) {
+                    if (currentMarker && currentMarker === currentBoard[j][i]) {
+                        counter++;
+                    } else {
+                        currentMarker = currentBoard[j][i];
+                        counter = currentMarker ? 1 : 0;
+                    }
+                    if (counter >= wincon) {
+                        return currentMarker === PLAYERONE_MARKER
+                                    ? PLAYERONE_WIN
+                                    : PLAYERTWO_WIN;
+                    }
+                }
+            }
+            // Left-right diagonal check, right side
+            for (let i = 0; i < cols - wincon + 1; i++) {
+                let currentMarker = currentBoard[0][i];
+                let counter = currentMarker ? 1 : 0;
+                for (let j = 1; i + j < cols; j++) {
+                    if (currentMarker && currentMarker === currentBoard[j][i + j]) {
+                        counter++;
+                    } else {
+                        currentMarker = currentBoard[j][i + j];
+                        counter = currentMarker ? 1 : 0;
+                    }
+                    if (counter >= wincon) {
+                        return currentMarker === PLAYERONE_MARKER
+                                    ? PLAYERONE_WIN
+                                    : PLAYERTWO_WIN;
+                    }
+                }
+            }
+            // Left-right diagonal check, left side
+            for (let i = 0; i < rows - wincon + 1; i++) {
+                let currentMarker = currentBoard[i][0];
+                let counter = currentMarker ? 1 : 0;
+                for (let j = 1; i + j < rows; j++) {
+                    if (currentMarker && currentMarker === currentBoard[i + j][j]) {
+                        counter++;
+                    } else {
+                        currentMarker = currentBoard[i + j][j];
+                        counter = currentMarker ? 1 : 0;
+                    }
+                    if (counter >= wincon) {
+                        return currentMarker === PLAYERONE_MARKER
+                                    ? PLAYERONE_WIN
+                                    : PLAYERTWO_WIN;
+                    }
+                }
+            }
+
         };
     }
 
@@ -117,4 +169,4 @@ const GameController = (function(rows, cols, wincon) {
         playRound,
     }
 
-})(3, 3, 3);
+})(10, 10, 3);
