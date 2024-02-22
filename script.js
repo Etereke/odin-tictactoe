@@ -4,6 +4,8 @@ const TIE = -1;
 const NO_WINNER = 0;
 const PLAYERONE_MARKER = 'X';
 const PLAYERTWO_MARKER = 'O';
+const GAMESIZE_SMALL = 1;
+const GAMESIZE_BIG = 2;
 
 const GameBoard = function (rows, cols) {
     const board = [];
@@ -38,7 +40,7 @@ const Player = function (name, marker) {
     }
 }
 
-const GameController = (function(rows, cols, wincon) {
+const GameController = function(rows, cols, wincon) {
     let board = GameBoard(rows, cols);
     let currentPlayer;
     let playerOneName = 'Player 1';
@@ -231,4 +233,55 @@ const GameController = (function(rows, cols, wincon) {
         playRound,
     }
 
-})(3, 3, 3);
+};
+
+const ViewController = (function(){
+    let gameController = GameController(3, 3, 3);
+    let gameSize = GAMESIZE_SMALL;
+    const gameContainerDiv = document.querySelector('.game-container');
+
+    const initView = () => {
+        if (gameSize === GAMESIZE_SMALL) {
+            gameController = GameController(3, 3, 3);
+            gameContainerDiv.classList.add('game-small');
+            gameContainerDiv.classList.remove('game-big');
+        } else if (gameSize === GAMESIZE_BIG) {
+            gameController = GameController(20, 20, 5);
+            gameContainerDiv.classList.add('game-big');
+            gameContainerDiv.classList.remove('game-small');
+        }
+        gameController.initGame();
+        drawBoard();
+    }
+
+    const drawBoard = () => {
+        gameContainerDiv.replaceChildren();
+        const boardState = gameController.getBoardState();
+        for (let i = 0; i < boardState.length; i++) {
+            for (let j = 0; j < boardState[i].length; j++) {
+                const cell = document.createElement('div');
+                cell.classList.add('cell');
+                if (boardState[i][j] === PLAYERONE_MARKER) {
+                    cell.classList.add('player-one-color');
+                } else if (boardState[i][j] === PLAYERTWO_MARKER) {
+                    cell.classList.add('player-two-color');
+                }
+                cell.textContent = boardState[i][j];
+                cell.dataset.i = i;
+                cell.dataset.j = j;
+                gameContainerDiv.appendChild(cell);
+            }
+        }
+    }
+
+    const handleClick = (row, col) => {
+        gameController.playRound(row, col);
+        drawBoard();
+    }
+
+    return {
+        handleClick,
+        initView,
+    }
+
+})();

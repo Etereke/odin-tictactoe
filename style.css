@@ -1,0 +1,101 @@
+:root {
+    --scheme-brown: #76453B;
+    --scheme-lightbrown: #B19470;
+    --scheme-light: #F8FAE5;
+    --scheme-green: #43766C;
+}
+
+body {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+
+    font-family: Roboto, sans-serif;
+    background-color: var(--scheme-brown);
+    color: var(--scheme-light);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    text-align: center;
+}
+
+.game-container {
+    background-color: var(--scheme-light);
+    border: 5px solid black;
+    display: grid;
+}
+
+.game-small {
+    grid-template: repeat(3, 150px) / repeat(3, 150px);
+}
+
+.cell {
+    border: 2px solid black;
+    color: var(--scheme-brown);
+    font-size: 8rem;
+    display: grid;
+    align-items: center;
+}
+
+.player-one-color {
+    color: var(--scheme-green);
+}
+
+.player-two-color {
+    color: var(--scheme-lightbrown);
+}
+
+
+
+.players-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.marker {
+    font-size: 1.5rem;
+    background-color: var(--scheme-light);
+    padding: 0.2rem 0.4rem;
+    border-radius: 10px;
+}
+
+.marker-player-one {
+    color: var(--scheme-green);
+    margin-right: 0.5rem;
+}
+
+.marker-player-two {
+    color: var(--scheme-lightbrown);
+    margin-left: 0.5rem;
+}
+
+.player-one-name,
+.player-two-name {
+    font-size: 1.2rem;
+}
+
+.btns-row {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+}
+
+button {
+    appearance: none;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border: none;
+    background-color: var(--scheme-light);
+    color: var(--scheme-green);
+    padding: 0.5rem 0.8rem;
+    border-radius: 20px;
+    width: 8rem;
+}

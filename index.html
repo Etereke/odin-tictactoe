@@ -3,11 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./style.css">
-    <script src="./script.js"></script>
+    <script src="./script.js" defer></script>
     <title>Tic-tac-toe</title>
 </head>
 <body>
-    
+    <div class="container">
+        <h1>Tic-Tac-Toe</h1>
+        <div class="game-container game-small">
+        
+        </div>
+        <div class="players-row">
+            <div class="player-one-display">
+                <span class="marker marker-player-one">X</span>
+                <span class="player-one-name">Player 1</span>
+            </div>
+            <div class="player-two-display">
+                <span class="player-two-name">Player 2</span>
+                <span class="marker marker-player-two">O</span>
+            </div>
+        </div>
+        <div class="game-state-row">
+        </div>
+        <div class="btns-row">
+            <button>Restart</button>
+            <button>Settings</button>
+        </div>
+    </div>
+    <dialog>
+        <form action="" method="dialog"></form>
+        <div class="input-row">
+            <label for="player-one-name">Player 1 name: </label>
+            <input type="text" name="player-one-name" id="player-one-name">
+        </div>
+        <div class="input-row">
+            <label for="player-two-name">Player 2 name: </label>
+            <input type="text" name="player-two-name" id="player-two-name">
+        </div>
+        <fieldset>
+            <legend>Game Type</legend>
+            <div class="input-radio">
+                <input type="radio" name="game-type" id="small-radio" value="SMALL">
+                <label for="small-radio"></label>
+            </div>
+            <div class="input-radio">
+                <input type="radio" name="game-type" id="big-radio" value="BIG">
+                <label for="big-radio"></label>
+            </div>
+        </fieldset>
+        <button>Apply Changes</button>
+    </dialog>
 </body>
 </html>
