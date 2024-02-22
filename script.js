@@ -33,7 +33,6 @@ const GameBoard = function (rows, cols) {
 
 const Player = function (name, marker) {
     const getMarker = () => marker;
-
     return {
         name,
         getMarker,
@@ -54,24 +53,22 @@ const GameController = function(rows, cols, wincon, players) {
     const getBoardState = () => {
         return board.getBoardState();
     }
-
+    const getCurrentPlayer = () => {
+        return currentPlayer;
+    }
+    const getGameState = () => {
+        return gameState;
+    }
     const playRound = (row, col) => {
         if (!board.getCell(row, col) && !gameState) {
             board.setCell(row, col, currentPlayer.getMarker());
             gameState = checkGameOver();
-            if(gameState) {
-                console.log(gameState);
-            } else {
+            if(!gameState) {
                 currentPlayer = currentPlayer === players[0]
                                     ? players[1]
                                     : players[0];
             }
         }
-        return gameState;
-    }
-
-    const getCurrentPlayer = () => {
-        return currentPlayer;
     }
 
     const checkGameOver = () => {
@@ -233,6 +230,7 @@ const GameController = function(rows, cols, wincon, players) {
         getBoardState,
         playRound,
         getCurrentPlayer,
+        getGameState,
     }
 
 };
@@ -244,7 +242,6 @@ const ViewController = (function(){
     ]
     let gameController = GameController(3, 3, 3, players);
     let gameSize = GAMESIZE_SMALL;
-    let gameState = NO_WINNER;
 
     const gameContainerDiv = document.querySelector('.game-container');
     const gameStateRowDiv = document.querySelector('.game-state-row');
@@ -276,25 +273,19 @@ const ViewController = (function(){
         initView();
     });
     
-    
-
     const initView = () => {
         if (gameSize === GAMESIZE_SMALL) {
             gameController = GameController(3, 3, 3, players);
-            
-            console.log(gameController)
             gameContainerDiv.classList.add('game-small');
             gameContainerDiv.classList.remove('game-big');
         } else if (gameSize === GAMESIZE_BIG) {
             gameController = GameController(20, 20, 5, players);
-            console.log(gameController)
             gameContainerDiv.classList.add('game-big');
             gameContainerDiv.classList.remove('game-small');
         }
         playerOneNameDiv.textContent = players[0].name;
         playerTwoNameDiv.textContent = players[1].name;
         gameController.initGame();
-        gameState = NO_WINNER;
         gameContainerDiv.addEventListener('click', handlePlayerClick);
         drawBoard();
     }
@@ -317,18 +308,18 @@ const ViewController = (function(){
                 gameContainerDiv.appendChild(cell);
             }
         }
-        updateViewState(gameState);
+        updateViewState();
     }
 
     const handlePlayerClick = (e) => {
         if(e.target.dataset.i) {
-            gameState = gameController.playRound(e.target.dataset.i, e.target.dataset.j);
+            gameController.playRound(e.target.dataset.i, e.target.dataset.j);
             drawBoard();
         }
     }
 
-    const updateViewState = (gameState) => {
-        switch (gameState) {
+    const updateViewState = () => {
+        switch (gameController.getGameState()) {
             case TIE:
                 gameStateRowDiv.textContent = "It's a tie!";
                 break;
