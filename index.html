@@ -34,28 +34,31 @@
         </div>
     </div>
     <dialog>
-        <form action="" method="dialog"></form>
-        <div class="input-row">
-            <label for="player-one-name">Player 1 name: </label>
-            <input type="text" name="player-one-name" id="player-one-name">
-        </div>
-        <div class="input-row">
-            <label for="player-two-name">Player 2 name: </label>
-            <input type="text" name="player-two-name" id="player-two-name">
-        </div>
-        <fieldset>
-            <legend>Game Type</legend>
-            <div class="input-radio">
-                <input type="radio" name="game-type" id="small-radio" value="SMALL">
-                <label for="small-radio"></label>
+        <form action="" method="dialog">
+            <div class="input-row">
+                <label for="player-one-name">Player 1 name: </label>
+                <input type="text" name="player-one-name" id="player-one-name" maxlength="13">
             </div>
-            <div class="input-radio">
-                <input type="radio" name="game-type" id="big-radio" value="BIG">
-                <label for="big-radio"></label>
+            <div class="input-row">
+                <label for="player-two-name">Player 2 name: </label>
+                <input type="text" name="player-two-name" id="player-two-name" maxlength="13">
             </div>
-        </fieldset>
-        <button class="btn-apply">Apply Changes</button>
-        <button class="btn-cancel">Cancel</button>
+            <fieldset>
+                <legend>Game Type</legend>
+                <div class="input-radio">
+                    <input type="radio" name="game-type" id="small-radio" value="1" checked>
+                    <label for="small-radio">3x3, 3 to win</label>
+                </div>
+                <div class="input-radio">
+                    <input type="radio" name="game-type" id="big-radio" value="2">
+                    <label for="big-radio">20x20, 5 to win</label>
+                </div>
+            </fieldset>
+            <div class="btns-row">
+                <button class="btn-apply">Apply Changes</button>
+                <button class="btn-cancel">Cancel</button>
+            </div>
+        </form>
     </dialog>
 </body>
 </html>

@@ -248,27 +248,51 @@ const ViewController = (function(){
 
     const gameContainerDiv = document.querySelector('.game-container');
     const gameStateRowDiv = document.querySelector('.game-state-row');
+    const playerOneNameDiv = document.querySelector('.player-one-name');
+    const playerTwoNameDiv = document.querySelector('.player-two-name');
     const btnRestart = document.querySelector('.btn-restart');
     const btnSettings = document.querySelector('.btn-settings');
+    const btnApplyDialog = document.querySelector('.btn-apply');
+    const btnCancelDialog = document.querySelector('.btn-cancel');
     const dialog = document.querySelector('dialog');
+    const inputPlayerOne = document.querySelector('#player-one-name');
+    const inputPlayerTwo = document.querySelector('#player-two-name');
+    
     btnRestart.addEventListener('click', () => {
         initView();
     });
     btnSettings.addEventListener('click', () => {
+        inputPlayerOne.value = players[0].name;
+        inputPlayerTwo.value = players[1].name;
         dialog.showModal();
     });
+    btnCancelDialog.addEventListener('click', () => {
+        dialog.close();
+    });
+    btnApplyDialog.addEventListener('click', () => {
+        players[0].name = inputPlayerOne.value || 'Player 1';
+        players[1].name = inputPlayerTwo.value || 'Player 2';
+        gameSize = +document.querySelector('input[name="game-type"]:checked').value;
+        initView();
+    });
+    
     
 
     const initView = () => {
         if (gameSize === GAMESIZE_SMALL) {
             gameController = GameController(3, 3, 3, players);
+            
+            console.log(gameController)
             gameContainerDiv.classList.add('game-small');
             gameContainerDiv.classList.remove('game-big');
         } else if (gameSize === GAMESIZE_BIG) {
             gameController = GameController(20, 20, 5, players);
+            console.log(gameController)
             gameContainerDiv.classList.add('game-big');
             gameContainerDiv.classList.remove('game-small');
         }
+        playerOneNameDiv.textContent = players[0].name;
+        playerTwoNameDiv.textContent = players[1].name;
         gameController.initGame();
         gameState = NO_WINNER;
         gameContainerDiv.addEventListener('click', handlePlayerClick);
