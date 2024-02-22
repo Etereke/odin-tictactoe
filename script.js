@@ -43,7 +43,7 @@ const GameController = (function(rows, cols, wincon) {
     let currentPlayer;
     let playerOneName = 'Player 1';
     let playerTwoName = 'Player 2';
-    let gameOver = true;
+    let gameState = NO_WINNER;
     const players = [];
     
     const initGame = () => {
@@ -51,7 +51,7 @@ const GameController = (function(rows, cols, wincon) {
         players[0] = Player(playerOneName || 'Player 1', PLAYERONE_MARKER);
         players[1] = Player(playerTwoName || 'Player 2', PLAYERTWO_MARKER);
         currentPlayer = players[0];
-        gameState = 0;
+        gameState = NO_WINNER;
     }
 
     const getBoardState = () => {
@@ -63,7 +63,7 @@ const GameController = (function(rows, cols, wincon) {
             board.setCell(row, col, currentPlayer.getMarker());
             gameState = checkGameOver();
             if(gameState) {
-                console.log('The game is over!');
+                console.log(gameState);
             } else {
                 currentPlayer = currentPlayer === players[0]
                                     ? players[1]
@@ -87,7 +87,19 @@ const GameController = (function(rows, cols, wincon) {
         if (tie) {
             return TIE
         } else {
-            // Row check
+            let isWon = WinChecker.Row(currentBoard);
+            if (isWon) return isWon;
+            else isWon = WinChecker.Column(currentBoard);
+            if (isWon) return isWon;
+            else isWon = WinChecker.PrimaryDiagonal(currentBoard);
+            if (isWon) return isWon;
+            else isWon = WinChecker.SecondaryDiagonal(currentBoard);
+            return isWon;
+        };
+    }
+
+    const WinChecker = (function () {
+        const Row = (currentBoard) => {
             for (let i = 0; i < rows; i++) {
                 let currentMarker = currentBoard[i][0];
                 let counter = currentMarker ? 1 : 0;
@@ -105,7 +117,9 @@ const GameController = (function(rows, cols, wincon) {
                     }
                 }
             }
-            // Col check
+            return NO_WINNER;
+        }
+        const Column = (currentBoard) => {
             for (let i = 0; i < cols; i++) {
                 let currentMarker = currentBoard[0][i];
                 let counter = currentMarker ? 1 : 0;
@@ -123,7 +137,10 @@ const GameController = (function(rows, cols, wincon) {
                     }
                 }
             }
-            // Left-right diagonal check, right side
+            return NO_WINNER;
+        }
+        const PrimaryDiagonal = (currentBoard) => {
+            // Above primary diagonal
             for (let i = 0; i < cols - wincon + 1; i++) {
                 let currentMarker = currentBoard[0][i];
                 let counter = currentMarker ? 1 : 0;
@@ -141,7 +158,7 @@ const GameController = (function(rows, cols, wincon) {
                     }
                 }
             }
-            // Left-right diagonal check, left side
+            // Below primary diagonal
             for (let i = 0; i < rows - wincon + 1; i++) {
                 let currentMarker = currentBoard[i][0];
                 let counter = currentMarker ? 1 : 0;
@@ -159,9 +176,54 @@ const GameController = (function(rows, cols, wincon) {
                     }
                 }
             }
-
-        };
-    }
+            return NO_WINNER;
+        }
+        const SecondaryDiagonal = (currentBoard) => {
+            // Above secondary diagonal
+            for (let i = wincon - 1; i < cols; i++) {
+                let currentMarker = currentBoard[0][i];
+                let counter = currentMarker ? 1 : 0;
+                for (let j = 1; i - j >= 0; j++) {
+                    if (currentMarker && currentMarker === currentBoard[j][i - j]) {
+                        counter++;
+                    } else {
+                        currentMarker = currentBoard[j][i - j];
+                        counter = currentMarker ? 1 : 0;
+                    }
+                    if (counter >= wincon) {
+                        return currentMarker === PLAYERONE_MARKER
+                                    ? PLAYERONE_WIN
+                                    : PLAYERTWO_WIN;
+                    }
+                }
+            }
+            // Below secondary diagonal
+            for (let i = 0; i < rows - wincon + 1; i++) {
+                let currentMarker = currentBoard[i][cols - 1];
+                let counter = currentMarker ? 1 : 0;
+                for (let j = cols - 2; j >= i; j--) {
+                    if (currentMarker && currentMarker === currentBoard[i + (cols - j - 1)][j]) {
+                        counter++;
+                    } else {
+                        currentMarker = currentBoard[i + (cols - j - 1)][j];
+                        counter = currentMarker ? 1 : 0;
+                    }
+                    if (counter >= wincon) {
+                        return currentMarker === PLAYERONE_MARKER
+                                    ? PLAYERONE_WIN
+                                    : PLAYERTWO_WIN;
+                    }
+                }
+            }
+            return NO_WINNER;
+        }
+        return {
+            Row,
+            Column,
+            PrimaryDiagonal,
+            SecondaryDiagonal,
+        }
+    })();
 
     return {
         initGame,
@@ -169,4 +231,4 @@ const GameController = (function(rows, cols, wincon) {
         playRound,
     }
 
-})(10, 10, 3);
+})(3, 3, 3);
