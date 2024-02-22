@@ -248,6 +248,16 @@ const ViewController = (function(){
 
     const gameContainerDiv = document.querySelector('.game-container');
     const gameStateRowDiv = document.querySelector('.game-state-row');
+    const btnRestart = document.querySelector('.btn-restart');
+    const btnSettings = document.querySelector('.btn-settings');
+    const dialog = document.querySelector('dialog');
+    btnRestart.addEventListener('click', () => {
+        initView();
+    });
+    btnSettings.addEventListener('click', () => {
+        dialog.showModal();
+    });
+    
 
     const initView = () => {
         if (gameSize === GAMESIZE_SMALL) {
@@ -260,6 +270,7 @@ const ViewController = (function(){
             gameContainerDiv.classList.remove('game-small');
         }
         gameController.initGame();
+        gameState = NO_WINNER;
         gameContainerDiv.addEventListener('click', handlePlayerClick);
         drawBoard();
     }
