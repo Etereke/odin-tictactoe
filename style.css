@@ -3,6 +3,7 @@
     --scheme-lightbrown: #B19470;
     --scheme-light: #F8FAE5;
     --scheme-green: #43766C;
+    --winner-green: #00d800;
 }
 
 body {
@@ -42,6 +43,10 @@ body {
     font-size: 8rem;
     display: grid;
     align-items: center;
+}
+
+.cell.winner-bgcolor {
+    background-color: var(--winner-green);
 }
 
 .player-one-color {

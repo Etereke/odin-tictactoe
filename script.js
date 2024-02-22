@@ -40,18 +40,13 @@ const Player = function (name, marker) {
     }
 }
 
-const GameController = function(rows, cols, wincon) {
+const GameController = function(rows, cols, wincon, players) {
     let board = GameBoard(rows, cols);
-    let currentPlayer;
-    let playerOneName = 'Player 1';
-    let playerTwoName = 'Player 2';
+    let currentPlayer = players[0];
     let gameState = NO_WINNER;
-    const players = [];
     
     const initGame = () => {
         board = GameBoard(rows, cols);
-        players[0] = Player(playerOneName || 'Player 1', PLAYERONE_MARKER);
-        players[1] = Player(playerTwoName || 'Player 2', PLAYERTWO_MARKER);
         currentPlayer = players[0];
         gameState = NO_WINNER;
     }
@@ -72,10 +67,23 @@ const GameController = function(rows, cols, wincon) {
                                     : players[0];
             }
         }
+        return gameState;
+    }
+
+    const getCurrentPlayer = () => {
+        return currentPlayer;
     }
 
     const checkGameOver = () => {
         const currentBoard = board.getBoardState();
+        let isWon = WinChecker.Row(currentBoard);
+        if (isWon) return isWon;
+        else isWon = WinChecker.Column(currentBoard);
+        if (isWon) return isWon;
+        else isWon = WinChecker.PrimaryDiagonal(currentBoard);
+        if (isWon) return isWon;
+        else isWon = WinChecker.SecondaryDiagonal(currentBoard);
+        if (isWon) return isWon;
         let tie = true;
         tie_check:
         for (row of currentBoard) {
@@ -89,15 +97,8 @@ const GameController = function(rows, cols, wincon) {
         if (tie) {
             return TIE
         } else {
-            let isWon = WinChecker.Row(currentBoard);
-            if (isWon) return isWon;
-            else isWon = WinChecker.Column(currentBoard);
-            if (isWon) return isWon;
-            else isWon = WinChecker.PrimaryDiagonal(currentBoard);
-            if (isWon) return isWon;
-            else isWon = WinChecker.SecondaryDiagonal(currentBoard);
-            return isWon;
-        };
+            return NO_WINNER;
+        }
     }
 
     const WinChecker = (function () {
@@ -231,26 +232,35 @@ const GameController = function(rows, cols, wincon) {
         initGame,
         getBoardState,
         playRound,
+        getCurrentPlayer,
     }
 
 };
 
 const ViewController = (function(){
-    let gameController = GameController(3, 3, 3);
+    let players = [
+        Player('Player 1', PLAYERONE_MARKER),
+        Player('Player 2', PLAYERTWO_MARKER)
+    ]
+    let gameController = GameController(3, 3, 3, players);
     let gameSize = GAMESIZE_SMALL;
+    let gameState = NO_WINNER;
+
     const gameContainerDiv = document.querySelector('.game-container');
+    const gameStateRowDiv = document.querySelector('.game-state-row');
 
     const initView = () => {
         if (gameSize === GAMESIZE_SMALL) {
-            gameController = GameController(3, 3, 3);
+            gameController = GameController(3, 3, 3, players);
             gameContainerDiv.classList.add('game-small');
             gameContainerDiv.classList.remove('game-big');
         } else if (gameSize === GAMESIZE_BIG) {
-            gameController = GameController(20, 20, 5);
+            gameController = GameController(20, 20, 5, players);
             gameContainerDiv.classList.add('game-big');
             gameContainerDiv.classList.remove('game-small');
         }
         gameController.initGame();
+        gameContainerDiv.addEventListener('click', handlePlayerClick);
         drawBoard();
     }
 
@@ -272,16 +282,46 @@ const ViewController = (function(){
                 gameContainerDiv.appendChild(cell);
             }
         }
+        updateViewState(gameState);
     }
 
-    const handleClick = (row, col) => {
-        gameController.playRound(row, col);
-        drawBoard();
+    const handlePlayerClick = (e) => {
+        if(e.target.dataset.i) {
+            gameState = gameController.playRound(e.target.dataset.i, e.target.dataset.j);
+            drawBoard();
+        }
+    }
+
+    const updateViewState = (gameState) => {
+        switch (gameState) {
+            case TIE:
+                gameStateRowDiv.textContent = "It's a tie!";
+                break;
+            case PLAYERONE_WIN:
+                gameStateRowDiv.textContent = `${players[0].name} wins!`;
+                document.querySelectorAll('.cell').forEach((cell) => {
+                    if (cell.textContent === PLAYERONE_MARKER) {
+                        cell.classList.add('winner-bgcolor');
+                    }
+                });
+                break;
+            case PLAYERTWO_WIN:
+                gameStateRowDiv.textContent = `${players[1].name} wins!`;
+                document.querySelectorAll('.cell').forEach((cell) => {
+                    if (cell.textContent === PLAYERTWO_MARKER) {
+                        cell.classList.add('winner-bgcolor');
+                    }
+                });
+                break;
+            case NO_WINNER:
+                gameStateRowDiv.textContent = `${gameController.getCurrentPlayer().name}'s turn`;
+        }
     }
 
     return {
-        handleClick,
         initView,
     }
 
 })();
+
+ViewController.initView();
